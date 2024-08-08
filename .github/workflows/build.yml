@@ -25,7 +25,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
+      - name: Install debootstrap
+        run: sudo apt-get install -y debootstrap
+
       # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Install bookworm using debootstrap
         run: |
-          debootstrap bookworm /srv/chroot/debian-bookworm http://deb.debian.org/debian
+          sudo debootstrap bookworm /srv/chroot/debian-bookworm http://deb.debian.org/debian
