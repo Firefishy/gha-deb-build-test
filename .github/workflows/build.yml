@@ -28,7 +28,19 @@ jobs:
       - name: Install debootstrap
         run: sudo apt-get install -y debootstrap
 
-      # Runs a set of commands using the runners shell
+      - uses: actions/cache@v4
+        id: debootstrap-cache
+        with:
+          path: /srv/chroot/debian-bookworm
+          key: ${{ runner.os }}-debootstrap-bookworm-cache
+
       - name: Install bookworm using debootstrap
+        if: steps.debootstrap-cache.outputs.cache-hit != 'true'
         run: |
           sudo debootstrap bookworm /srv/chroot/debian-bookworm http://deb.debian.org/debian
+
+      - name: Install bookworm using debootstrap
+        if: steps.debootstrap-cache.outputs.cache-hit != 'true'
+        run: |
+          sudo chroot /srv/chroot/debian-bookworm apt-get update -y
+          sudo chroot /srv/chroot/debian-bookworm apt-get dist-upgrade -y
